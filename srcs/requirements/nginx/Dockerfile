@@ -1,8 +1,19 @@
-# Specifing the OS and version of the container.
-FROM alpine:3.17
+FROM debian:bullseye
 
-# Telling the container to run the commands "apk update" to update apk (Alpine Package Tool) and "apk add --no-chache nginx openssl" to add nginx package and openssl package requiered for the container to work properly. The --no-cache flag is used for not to cache the index locally, keeping the container small.
-RUN apk update && apk add --no-cache nginx openssl
+# Install nginx and openssl
+RUN apt update -y && apt upgrade -y && \
+	apt install nginx -y && apt install openssl -y
 
+# Generate a self-signed ssl certificate
+RUN openssl req -batch -x509 -sha256 -nodes -newkey rsa:2048 -days 365 \
+	-keyout /etc/ssl/private/localhost.key \
+	-out /etc/ssl/certs/localhost.crt
 
+# Copy the nginx configuration file
+COPY ./conf/https.conf /etc/nginx/conf.d
 
+# Expose port 443 ( https )
+EXPOSE 443
+
+# Start nginx in foreground
+CMD ["nginx", "-g", "daemon off;"]

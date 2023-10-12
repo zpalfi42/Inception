@@ -1,0 +1,63 @@
+# Project name ( used as prefix for containers )
+name: inception
+
+# Services to run ( containers )
+services:
+  mariadb:
+    container_name: mariadb
+    build:
+      context: requirements/mariadb
+      args:
+        - WORDPRESS_DATABASE
+        - WORDPRESS_USER
+        - WORDPRESS_PASSWORD
+    networks:
+      - inception
+    volumes:
+      - mariadb:/var/lib/mysql
+
+  wordpress:
+    container_name: wordpress
+    build:
+      context: requirements/wordpress
+      args:
+        - WORDPRESS_DATABASE
+        - WORDPRESS_USER
+        - WORDPRESS_PASSWORD
+    networks:
+      - inception
+    volumes:
+      - wordpress:/var/www/html
+    depends_on:
+      - mariadb
+
+  nginx:
+    container_name: nginx
+    build:
+      context: requirements/nginx
+    networks:
+      - inception
+    ports:
+      - 443:443
+    volumes:
+      - wordpress:/var/www/html
+    depends_on:
+      - wordpress
+
+# Create the network ( bridge by default )
+networks:
+  inception:
+    name: inception
+
+# Create volumes ( VOLUMES_PATH exported by Makefile )
+volumes:
+  mariadb:
+    driver_opts:
+      o: bind
+      type: none
+      device: ${VOLUMES_PATH}/mariadb
+  wordpress:
+    driver_opts:
+      o: bind
+      type: none
+      device: ${VOLUMES_PATH}/wordpress

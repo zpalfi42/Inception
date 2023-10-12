@@ -1,0 +1,26 @@
+# Specifing the OS and version of the container.
+FROM alpine:3.17
+
+# Telling the container to run the commands "apk update" to update apk (Alpine Package Tool) and "apk add --no-chache nginx openssl" to add nginx package and openssl package requiered for the container to work properly. The --no-cache flag is used for not to cache the index locally, keeping the container small.
+RUN apk update && apk add --no-cache nginx openssl
+
+# Creating the folder where ssl certification and key will be stored
+RUN mkdir -p -m 777 /etc/nginx/ssl
+
+# Creating the ssl certification and key in the correct directory with the correct information.
+RUN openssl req -newkey rsa:4096 -x509 -sha256 -days 365 -nodes \
+-out /etc/nginx/ssl/zpalfi.42.fr.crt \
+-keyout /etc/nginx/ssl/zpalfi.42.fr.key \
+-subj "/C=ES/ST=Catalonia/L=Barcelona/O=42/OU=42 Barcelona/CN=zpalfi.42.fr"
+
+# Creating the /run/nginx directory used by nginx to store temporary files. Uually nginx stores files like the PID file or ocket files in the /run directory, but creating the /run/nginx directory helps nginx having all in one folder with makes the operations smoother and preventing issues related to file storage and process managment.
+RUN mkdir -p /run/nginx
+
+# Copying the configuration file into the default nginx path.
+COPY conf/conf.conf /etc/nginx/nginx.conf
+
+# Opening the port 433.
+EXPOSE 433
+
+# Runing the command "nginx -g daemon off;". This command starts nginx with the global directive daemon off. This option makes nginx not to run in the background, so it runs in the foreground. This is usually done in Docker containers to prevent Docker from exiting because if nginx is running in the background it would consider that nginx is off. 
+CMD [ "nginx", "-g", "daemon off;" ]
