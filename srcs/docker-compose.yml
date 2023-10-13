@@ -8,9 +8,12 @@ services:
     build:
       context: requirements/mariadb
       args:
-        - WORDPRESS_DATABASE
-        - WORDPRESS_USER
-        - WORDPRESS_PASSWORD
+        - DB_NAME
+        - DB_ROOT_USER
+        - DB_ROOT_PASS
+        - DB_USER
+        - DB_PASS
+        - DB_HOST
     networks:
       - inception
     volumes:
@@ -28,8 +31,8 @@ services:
       - inception
     volumes:
       - wordpress:/var/www/html
-    depends_on:
-      - mariadb
+        #depends_on:
+        #- mariadb
 
   nginx:
     container_name: nginx

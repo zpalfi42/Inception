@@ -395,7 +395,7 @@ CREATE TABLE `wp_users` (
 
 LOCK TABLES `wp_users` WRITE;
 /*!40000 ALTER TABLE `wp_users` DISABLE KEYS */;
-INSERT INTO `wp_users` VALUES (1,'zsolt','$P$BQc6dty26AHqyHhPbNDFMqoDXsR/Ys1','zsolt','zsolt.palfi002@gmail.com','https://zpalfi.42.fr','2023-05-16 19:07:30','',0,'zsolt'),(2,'zim','$P$BVagWung9bd4ERdcD/rhYTdGChS70W.','zim','zim@zim.com','','2023-05-17 15:39:07','',0,'Zim');
+INSERT INTO `wp_users` VALUES (1,'zsolt','$P$BQc6dty26AHqyHhPbNDFMqoDXsR/Ys1','zsolt','zsolt.palfi2002@gmail.com','https://zpalfi.42.fr','2023-05-16 19:07:30','',0,'zsolt'),(2,'zim','$P$BVagWung9bd4ERdcD/rhYTdGChS70W.','zim','zim@zim.com','','2023-05-17 15:39:07','',0,'Zim');
 /*!40000 ALTER TABLE `wp_users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
