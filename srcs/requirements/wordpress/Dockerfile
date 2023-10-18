@@ -16,6 +16,7 @@ RUN mkdir -p /run/php && \
 	chmod 777 /run/php
 
 COPY	./tools/wp.sh /usr/local/bin/wp.sh
+
 RUN	chmod 777 /usr/local/bin/wp.sh
 
 EXPOSE 9000

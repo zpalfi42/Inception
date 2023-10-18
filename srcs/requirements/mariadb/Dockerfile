@@ -13,9 +13,8 @@ RUN mkdir -p /var/run/mysqld && \
 EXPOSE 3306
 
 COPY tools/db.sh /usr/local/bin/
-RUN chmod 777 /usr/local/bin/db.sh
-
-RUN rm -rf ./wp-config.php
-RUN mysql_install_db
+RUN chmod 777 /usr/local/bin/db.sh && \
+	rm -rf ./wp-config.php && \
+	mysql_install_db
 
 ENTRYPOINT ["/usr/local/bin/db.sh"]
