@@ -1,65 +1,60 @@
-# Project name ( used as prefix for containers )
-name: inception
+networks:
+  inception:
+    name: inception
+    driver: bridge
 
 # Services to run ( containers )
 services:
   mariadb:
     container_name: mariadb
+    image: mariadb
     build:
-      context: requirements/mariadb
-      args:
-        - DB_NAME
-        - DB_ROOT_USER
-        - DB_ROOT_PASS
-        - DB_USER
-        - DB_PASS
-        - DB_HOST
+      context: ./requirements/mariadb
     networks:
       - inception
     volumes:
-      - mariadb:/var/lib/mysql
+      - mariadb_data:/var/lib/mysql
+    env_file:
+      - .env
 
   wordpress:
     container_name: wordpress
+    image: wordpress
     build:
-      context: requirements/wordpress
-      args:
-        - WORDPRESS_DATABASE
-        - WORDPRESS_USER
-        - WORDPRESS_PASSWORD
+      context: ./requirements/wordpress
     networks:
       - inception
     volumes:
-      - wordpress:/var/www/html
-        #depends_on:
-        #- mariadb
+      - wordpress_data:/var/www/html
+    depends_on:
+      - mariadb
+    env_file:
+      - .env
 
   nginx:
     container_name: nginx
+    image: nginx
     build:
-      context: requirements/nginx
+      context: ./requirements/nginx
     networks:
       - inception
     ports:
       - 443:443
     volumes:
-      - wordpress:/var/www/html
-    depends_on:
-      - wordpress
-
-# Create the network ( bridge by default )
-networks:
-  inception:
-    name: inception
+      - wordpress_data:/var/www/html
+    env_file:
+      - .env
 
 # Create volumes ( VOLUMES_PATH exported by Makefile )
 volumes:
-  mariadb:
+  mariadb_data:
+    driver: local
     driver_opts:
       o: bind
       type: none
       device: ${VOLUMES_PATH}/mariadb
-  wordpress:
+  wordpress_data:
+    driver: local
     driver_opts:
       o: bind
       type: none
